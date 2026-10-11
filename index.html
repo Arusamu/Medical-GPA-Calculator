@@ -1,20 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- بهینه‌سازی Viewport برای جلوگیری از زوم تصادفی در اندروید -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- تنظیمات PWA برای اندروید -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4f46e5" id="theme-color-meta">
+    
     <title>محاسبه‌گر معدل دانشجویان علوم پزشکی</title>
 
-   <link
-  href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
-  rel="stylesheet"
->
-    >
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 
     <style>
         :root {
-
             --primary: #4f46e5;
             --primary-hover: #4338ca;
             --primary-light: #e0e7ff;
@@ -48,6 +47,8 @@
             margin: 0;
             padding: 0;
             font-family: 'Vazirmatn', Tahoma, sans-serif;
+            /* حذف هایلایت چشمک‌زن پیش‌فرض لمس در اندروید */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         body {
@@ -55,6 +56,8 @@
             color: var(--text-main);
             line-height: 1.6;
             transition: var(--transition);
+            /* جلوگیری از رفرش شدن صفحه با کشیدن به پایین در کروم اندروید */
+            overscroll-behavior-y: none;
         }
 
         /* Layout */
@@ -96,6 +99,13 @@
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 4px;
+            /* اسکرول نرم در اندروید و پنهان کردن نوار اسکرول */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .nav-links::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-link {
@@ -109,6 +119,9 @@
             cursor: pointer;
             transition: var(--transition);
             white-space: nowrap;
+            /* بهبود تاچ */
+            touch-action: manipulation;
+            min-height: 44px;
         }
 
         .nav-link:hover {
@@ -133,6 +146,8 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            min-height: 44px;
+            min-width: 44px;
         }
         
         .theme-toggle:hover {
@@ -216,12 +231,11 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
-        .card:hover {
-            box-shadow: var(--shadow);
-            transform: translateY(-2px);
-            border-color: var(--primary);
+        .card:active {
+            transform: scale(0.98);
         }
 
         .card-header {
@@ -275,19 +289,22 @@
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1rem;
             cursor: pointer;
             border: none;
             transition: var(--transition);
+            touch-action: manipulation;
+            /* حداقل اندازه استاندارد برای کلیک در موبایل */
+            min-height: 48px;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
         }
 
         .btn-primary {
             background-color: var(--primary);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
         }
 
         .btn-outline {
@@ -296,21 +313,15 @@
             color: var(--text-main);
         }
 
-        .btn-outline:hover {
-            background-color: var(--bg);
-            border-color: var(--text-muted);
-        }
-
         .btn-danger {
             background-color: #fee2e2;
             color: var(--danger);
         }
-
-        .btn-danger:hover {
-            background-color: #fca5a5;
-            color: var(--danger-hover);
-        }
         
+        [data-theme="dark"] .btn-danger {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
         .btn-icon {
             padding: 8px;
             border-radius: 6px;
@@ -319,18 +330,11 @@
             cursor: pointer;
             color: var(--text-muted);
             transition: var(--transition);
-        }
-        
-        .btn-icon:hover {
-            background-color: var(--bg);
-            color: var(--text-main);
-            border-color: var(--border);
-        }
-
-        .btn-icon.danger:hover {
-            background-color: #fee2e2;
-            color: var(--danger);
-            border-color: #fca5a5;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Tables */
@@ -340,6 +344,7 @@
             border-radius: var(--radius);
             overflow-x: auto;
             box-shadow: var(--shadow-sm);
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -361,14 +366,6 @@
             font-size: 0.9rem;
         }
 
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background-color: var(--bg);
-        }
-        
         .td-actions {
             display: flex;
             gap: 4px;
@@ -389,7 +386,7 @@
 
         input[type="text"],
         input[type="number"],
-        input[type="text"]:focus {
+        input[inputmode="decimal"] {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
@@ -399,6 +396,9 @@
             font-size: 1rem;
             transition: var(--transition);
             outline: none;
+            /* ارتفاع مناسب فیلد در موبایل */
+            min-height: 48px;
+            -webkit-appearance: none;
         }
 
         input:focus {
@@ -423,25 +423,22 @@
             background-color: var(--bg);
             border-radius: 8px;
             border: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px;
+            padding: 12px 8px;
             border-radius: 6px;
             cursor: pointer;
             transition: var(--transition);
         }
         
-        .checkbox-item:hover {
-            background-color: var(--surface);
-        }
-
         .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
         }
 
@@ -452,7 +449,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -460,7 +457,7 @@
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(3px);
             padding: 16px;
         }
 
@@ -475,15 +472,15 @@
             width: 100%;
             max-width: 500px;
             box-shadow: var(--shadow-lg);
-            transform: scale(0.95);
-            transition: var(--transition);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             max-height: 90vh;
         }
 
         .modal-overlay.active .modal {
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
 
         .modal-header {
@@ -502,15 +499,20 @@
         .modal-close {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--text-muted);
             cursor: pointer;
             line-height: 1;
+            padding: 8px;
+            margin: -8px;
+            min-width: 44px;
+            min-height: 44px;
         }
 
         .modal-body {
             padding: 24px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-footer {
@@ -526,10 +528,12 @@
             position: fixed;
             bottom: 24px;
             left: 24px;
+            right: 24px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             z-index: 2000;
+            pointer-events: none;
         }
 
         .toast {
@@ -542,100 +546,20 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transform: translateX(-100%);
+            transform: translateY(100%);
             opacity: 0;
-            animation: slideIn 0.3s forwards;
-            min-width: 250px;
+            animation: slideUp 0.3s forwards;
+            pointer-events: auto;
         }
 
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--danger); }
-        .toast.warning { border-color: var(--warning); }
-
-        .toast.fade-out {
-            animation: fadeOut 0.3s forwards;
-        }
-
-        @keyframes slideIn {
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes fadeOut {
-            to { transform: translateX(-100%); opacity: 0; }
-        }
-
-        /* Empty States */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 24px;
-            text-align: center;
-            background-color: var(--surface);
-            border: 1px dashed var(--border);
-            border-radius: var(--radius);
-            color: var(--text-muted);
-            gap: 16px;
-        }
-        
-        .empty-icon {
-            font-size: 3rem;
-            opacity: 0.5;
-        }
-
-        .text-center { text-align: center; }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background-color: var(--primary-light);
-            color: var(--primary);
-        }
-
-        /* Summary Banner */
-        .summary-banner {
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: white;
-            padding: 24px;
-            border-radius: var(--radius);
-            margin-bottom: 24px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            box-shadow: var(--shadow);
-            align-items: center;
-        }
-
-        .summary-banner .stat {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .summary-banner .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .summary-banner .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-        
-        .detail-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
+        @keyframes slideUp {
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* SVG Icons */
         svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             fill: none;
             stroke: currentColor;
             stroke-width: 2;
@@ -643,15 +567,31 @@
             stroke-linejoin: round;
         }
 
-        .logo svg { stroke-width: 2.5; width: 28px; height: 28px; }
-
         @media (max-width: 768px) {
             .app-container { padding: 12px; }
             header { flex-direction: column; align-items: stretch; }
-            .nav-links { justify-content: flex-start; }
-            .summary-banner { flex-direction: column; text-align: center; }
-            .modal { max-width: 100%; height: 100%; border-radius: 0; max-height: 100vh; }
-            .modal-overlay { padding: 0; }
+            .nav-links { justify-content: flex-start; margin-top: 8px;}
+            
+            /* برای اندروید دیالوگ‌ها را از پایین باز می‌کنیم */
+            .modal { 
+                max-width: 100%; 
+                border-radius: 20px 20px 0 0; 
+                margin-top: auto;
+                max-height: 85vh;
+            }
+            .modal-overlay { 
+                padding: 0; 
+                align-items: flex-end;
+            }
+            .toast-container {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+            .toast {
+                min-width: auto;
+                width: 100%;
+            }
         }
         
         .settings-section {
@@ -673,9 +613,9 @@
         </div>
         <nav class="nav-links">
             <button class="nav-link active" data-target="view-dashboard">داشبورد</button>
-            <button class="nav-link" data-target="view-semesters">ترم‌های تحصیلی</button>
-            <button class="nav-link" data-target="view-groups">معدل‌های تجمیعی</button>
-            <button class="nav-link" data-target="view-settings">پشتیبان‌گیری</button>
+            <button class="nav-link" data-target="view-semesters">ترم‌ها</button>
+            <button class="nav-link" data-target="view-groups">گروه‌ها</button>
+            <button class="nav-link" data-target="view-settings">تنظیمات</button>
         </nav>
         <button class="theme-toggle" id="btn-theme" title="تغییر تم">
             <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -686,59 +626,47 @@
         <!-- Dashboard View -->
         <div id="view-dashboard" class="view-section active">
             <div class="section-header">
-                <h1 class="section-title">داشبورد وضعیت تحصیلی</h1>
+                <h1 class="section-title">داشبورد</h1>
             </div>
-            
-            <div class="stats-grid" id="dashboard-stats">
-                <!-- Stats will be rendered here -->
-            </div>
-
-            <div class="cards-grid" id="dashboard-recent">
-                <!-- Recent info will be rendered here -->
-            </div>
+            <div class="stats-grid" id="dashboard-stats"></div>
+            <div class="cards-grid" id="dashboard-recent"></div>
         </div>
 
         <!-- Semesters List View -->
         <div id="view-semesters" class="view-section">
             <div class="section-header">
-                <h1 class="section-title">ترم‌های تحصیلی</h1>
+                <h1 class="section-title">ترم‌ها</h1>
                 <button class="btn btn-primary" onclick="openSemesterModal()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    افزودن ترم جدید
+                    ترم جدید
                 </button>
             </div>
-            <div id="semesters-container">
-                <!-- Semesters list -->
-            </div>
+            <div id="semesters-container"></div>
         </div>
 
         <!-- Semester Detail View -->
         <div id="view-semester-detail" class="view-section">
-            <div class="detail-header">
+            <div class="section-header" style="margin-bottom: 16px;">
                 <button class="btn btn-outline" onclick="switchView('view-semesters')">
                     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     بازگشت
                 </button>
-                <h1 class="section-title" id="sd-title">جزئیات ترم</h1>
+                <h1 class="section-title" id="sd-title" style="font-size: 1.25rem;">جزئیات ترم</h1>
             </div>
 
-            <div class="summary-banner">
-                <div class="stat">
-                    <div class="stat-label">معدل ترم</div>
-                    <div class="stat-value" id="sd-gpa">-</div>
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card" style="padding: 16px;">
+                    <div class="stat-card-title">معدل ترم</div>
+                    <div class="stat-card-value" id="sd-gpa">-</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">واحدهای ثبت‌شده</div>
-                    <div class="stat-value" id="sd-credits">-</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">تعداد دروس</div>
-                    <div class="stat-value" id="sd-courses-count">-</div>
+                <div class="stat-card" style="padding: 16px;">
+                    <div class="stat-card-title">واحدهای ثبت‌شده</div>
+                    <div class="stat-card-value" id="sd-credits">-</div>
                 </div>
             </div>
 
             <div class="section-header">
-                <h2 class="section-title" style="font-size: 1.25rem;">لیست دروس</h2>
+                <h2 class="section-title" style="font-size: 1.1rem;">لیست دروس</h2>
                 <button class="btn btn-primary" onclick="openCourseModal()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     افزودن درس
@@ -751,14 +679,11 @@
                         <tr>
                             <th>نام درس</th>
                             <th>نمره</th>
-                            <th>تعداد واحد</th>
-                            <th>امتیاز (نمره × واحد)</th>
+                            <th>واحد</th>
                             <th>عملیات</th>
                         </tr>
                     </thead>
-                    <tbody id="courses-tbody">
-                        <!-- Courses will be rendered here -->
-                    </tbody>
+                    <tbody id="courses-tbody"></tbody>
                 </table>
             </div>
         </div>
@@ -766,86 +691,71 @@
         <!-- Groups List View -->
         <div id="view-groups" class="view-section">
             <div class="section-header">
-                <h1 class="section-title">معدل‌های تجمیعی (گروه‌ها)</h1>
+                <h1 class="section-title">معدل‌های تجمیعی</h1>
                 <button class="btn btn-primary" onclick="openGroupModal()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    ایجاد گروه جدید
+                    گروه جدید
                 </button>
             </div>
-            <div id="groups-container">
-                <!-- Groups list -->
-            </div>
+            <div id="groups-container"></div>
         </div>
 
         <!-- Group Detail View -->
         <div id="view-group-detail" class="view-section">
-            <div class="detail-header">
+            <div class="section-header" style="margin-bottom: 16px;">
                 <button class="btn btn-outline" onclick="switchView('view-groups')">
                     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     بازگشت
                 </button>
-                <h1 class="section-title" id="gd-title">جزئیات معدل تجمیعی</h1>
+                <h1 class="section-title" id="gd-title" style="font-size: 1.25rem;">جزئیات معدل</h1>
             </div>
 
-            <div class="summary-banner">
-                <div class="stat">
-                    <div class="stat-label">معدل تجمیعی (وزن‌دار)</div>
-                    <div class="stat-value" id="gd-gpa">-</div>
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card" style="padding: 16px;">
+                    <div class="stat-card-title">معدل تجمیعی</div>
+                    <div class="stat-card-value" id="gd-gpa">-</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">مجموع واحدهای مؤثر</div>
-                    <div class="stat-value" id="gd-credits">-</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">تعداد ترم‌های شامل‌شده</div>
-                    <div class="stat-value" id="gd-semesters-count">-</div>
+                <div class="stat-card" style="padding: 16px;">
+                    <div class="stat-card-title">واحدهای مؤثر</div>
+                    <div class="stat-card-value" id="gd-credits">-</div>
                 </div>
             </div>
 
             <div class="section-header">
-                <h2 class="section-title" style="font-size: 1.25rem;">ترم‌های این گروه</h2>
+                <h2 class="section-title" style="font-size: 1.1rem;">ترم‌های این گروه</h2>
                 <button class="btn btn-outline" onclick="editCurrentGroup()">
-                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    ویرایش ترم‌های گروه
+                    ویرایش
                 </button>
             </div>
 
-            <div class="cards-grid" id="gd-semesters-container">
-                <!-- Included semesters list -->
-            </div>
+            <div class="cards-grid" id="gd-semesters-container"></div>
         </div>
 
         <!-- Settings View -->
         <div id="view-settings" class="view-section">
             <div class="section-header">
-                <h1 class="section-title">پشتیبان‌گیری و اطلاعات داده‌ها</h1>
+                <h1 class="section-title">تنظیمات و داده‌ها</h1>
             </div>
             
             <div class="settings-section">
-                <h2 class="card-title" style="margin-bottom: 16px;">خروجی گرفتن از اطلاعات (Export)</h2>
-                <p style="color: var(--text-muted); margin-bottom: 16px;">شما می‌توانید تمام اطلاعات شامل ترم‌ها، نمرات و گروه‌ها را در قالب یک فایل ذخیره کنید تا در صورت نیاز یا در دستگاهی دیگر آن را بازیابی کنید.</p>
-                <button class="btn btn-primary" onclick="exportData()">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <h2 class="card-title" style="margin-bottom: 16px;">پشتیبان‌گیری (Export)</h2>
+                <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
                     دانلود فایل پشتیبان (JSON)
                 </button>
             </div>
 
             <div class="settings-section">
                 <h2 class="card-title" style="margin-bottom: 16px;">بازیابی اطلاعات (Import)</h2>
-                <p style="color: var(--text-muted); margin-bottom: 16px;">فایل پشتیبان دریافت شده را انتخاب کنید. توجه داشته باشید که با این کار، تمامی اطلاعات فعلی حذف شده و اطلاعات جدید جایگزین می‌شود.</p>
                 <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImport(event)">
-                <button class="btn btn-outline" onclick="document.getElementById('import-file').click()">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <button class="btn btn-outline" onclick="document.getElementById('import-file').click()" style="width: 100%;">
                     انتخاب فایل و بازیابی
                 </button>
             </div>
 
-            <div class="settings-section" style="border-color: #fca5a5;">
-                <h2 class="card-title" style="margin-bottom: 16px; color: var(--danger);">حذف تمامی اطلاعات</h2>
-                <p style="color: var(--text-muted); margin-bottom: 16px;">این عملیات غیرقابل بازگشت است و تمامی ترم‌ها، درس‌ها و معدل‌های تجمیعی شما برای همیشه پاک خواهند شد.</p>
-                <button class="btn btn-danger" onclick="confirmWipeData()">
-                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    پاک کردن کل اطلاعات
+            <div class="settings-section" style="border-color: var(--danger);">
+                <h2 class="card-title" style="margin-bottom: 16px; color: var(--danger);">حذف اطلاعات</h2>
+                <button class="btn btn-danger" onclick="confirmWipeData()" style="width: 100%;">
+                    پاک کردن کل اطلاعات برنامه
                 </button>
             </div>
         </div>
@@ -853,21 +763,20 @@
 </div>
 
 <!-- Modals -->
-
 <!-- Semester Modal -->
 <div class="modal-overlay" id="modal-semester">
     <div class="modal">
         <div class="modal-header">
-            <div class="modal-title" id="ms-title">افزودن ترم جدید</div>
+            <div class="modal-title" id="ms-title">افزودن ترم</div>
             <button class="modal-close" onclick="closeModal('modal-semester')">&times;</button>
         </div>
         <div class="modal-body">
             <form id="form-semester" onsubmit="saveSemester(event)">
                 <input type="hidden" id="ms-id">
                 <div class="form-group">
-                    <label for="ms-name">نام ترم (مثال: ترم اول، پاییز ۱۴۰۲)</label>
-                    <input type="text" id="ms-name" required autocomplete="off" placeholder="نام ترم را وارد کنید...">
-                    <div class="error-message" id="ms-error">لطفاً نام ترم را وارد کنید.</div>
+                    <label for="ms-name">نام ترم</label>
+                    <input type="text" id="ms-name" required autocomplete="off" placeholder="مثال: ترم پاییز ۱۴۰۲">
+                    <div class="error-message" id="ms-error">وارد کردن نام ترم الزامی است.</div>
                 </div>
             </form>
         </div>
@@ -878,7 +787,7 @@
     </div>
 </div>
 
-<!-- Course Modal -->
+<!-- Course Modal (با inputmode بهینه برای اندروید) -->
 <div class="modal-overlay" id="modal-course">
     <div class="modal">
         <div class="modal-header">
@@ -893,20 +802,22 @@
                     <input type="text" id="mc-name" required autocomplete="off" placeholder="مثال: آناتومی">
                 </div>
                 <div class="form-group">
-                    <label for="mc-grade">نمره (اختیاری در صورت عدم اعلام نمره)</label>
-                    <input type="text" id="mc-grade" autocomplete="off" placeholder="مثال: ۱۸.۵ یا 18.5">
-                    <div class="error-message" id="mc-grade-error">نمره باید عددی بین ۰ تا ۲۰ باشد.</div>
+                    <label for="mc-grade">نمره</label>
+                    <!-- تغییر به inputmode decimal برای باز شدن کیبورد عددی در اندروید -->
+                    <input type="text" inputmode="decimal" id="mc-grade" autocomplete="off" placeholder="مثال: 18.5">
+                    <div class="error-message" id="mc-grade-error">نمره باید بین ۰ تا ۲۰ باشد.</div>
                 </div>
                 <div class="form-group">
                     <label for="mc-credits">تعداد واحد</label>
-                    <input type="text" id="mc-credits" required autocomplete="off" placeholder="مثال: ۳">
-                    <div class="error-message" id="mc-credits-error">تعداد واحد باید عددی مثبت باشد.</div>
+                    <!-- تغییر به inputmode numeric برای کیبورد عددی در اندروید -->
+                    <input type="text" inputmode="numeric" id="mc-credits" required autocomplete="off" placeholder="مثال: 3">
+                    <div class="error-message" id="mc-credits-error">تعداد واحد نامعتبر است.</div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" onclick="closeModal('modal-course')">انصراف</button>
-            <button class="btn btn-primary" onclick="document.getElementById('form-course').requestSubmit()">ذخیره درس</button>
+            <button class="btn btn-primary" onclick="document.getElementById('form-course').requestSubmit()">ذخیره</button>
         </div>
     </div>
 </div>
@@ -922,21 +833,19 @@
             <form id="form-group" onsubmit="saveGroup(event)">
                 <input type="hidden" id="mg-id">
                 <div class="form-group">
-                    <label for="mg-name">نام گروه (مثال: علوم پایه، کل دوره)</label>
-                    <input type="text" id="mg-name" required autocomplete="off" placeholder="نام گروه...">
+                    <label for="mg-name">نام گروه</label>
+                    <input type="text" id="mg-name" required autocomplete="off" placeholder="مثال: علوم پایه">
                 </div>
                 <div class="form-group">
-                    <label>انتخاب ترم‌های زیرمجموعه:</label>
-                    <div id="mg-semesters-list" class="checkbox-list">
-                        <!-- Checkboxes generated via JS -->
-                    </div>
-                    <div class="error-message" id="mg-error">حداقل یک ترم باید انتخاب شود.</div>
+                    <label>انتخاب ترم‌ها:</label>
+                    <div id="mg-semesters-list" class="checkbox-list"></div>
+                    <div class="error-message" id="mg-error">حداقل یک ترم انتخاب کنید.</div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" onclick="closeModal('modal-group')">انصراف</button>
-            <button class="btn btn-primary" onclick="document.getElementById('form-group').requestSubmit()">ذخیره گروه</button>
+            <button class="btn btn-primary" onclick="document.getElementById('form-group').requestSubmit()">ذخیره</button>
         </div>
     </div>
 </div>
@@ -949,10 +858,10 @@
             <button class="modal-close" onclick="closeModal('modal-confirm')">&times;</button>
         </div>
         <div class="modal-body">
-            <p id="confirm-message">آیا از انجام این کار اطمینان دارید؟</p>
+            <p id="confirm-message" style="margin-top: 10px;">آیا اطمینان دارید؟</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('modal-confirm')">انصراف</button>
+            <button class="btn btn-outline" onclick="closeModal('modal-confirm')">خیر</button>
             <button class="btn btn-danger" id="confirm-btn">بله، حذف کن</button>
         </div>
     </div>
@@ -961,17 +870,12 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script>
-    // Constants & State
     const STORAGE_KEY = 'gpa_app_data_v1';
-    let state = {
-        semesters: [], // { id, name, courses: [{ id, name, grade, credits }] }
-        groups: []     // { id, name, semesterIds: [] }
-    };
+    let state = { semesters: [], groups: [] };
     let currentSemesterId = null;
     let currentGroupId = null;
     let confirmAction = null;
 
-    // Persist & Load
     function loadData() {
         try {
             const data = localStorage.getItem(STORAGE_KEY);
@@ -981,7 +885,7 @@
                 if (parsed.groups) state.groups = parsed.groups;
             }
         } catch (e) {
-            showToast('خطا در بارگذاری اطلاعات ذخیره شده.', 'error');
+            showToast('خطا در بارگذاری اطلاعات.', 'error');
         }
     }
 
@@ -989,12 +893,10 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    // Utility Functions
     function generateId() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    // Convert Persian/Arabic digits to English for parsing, and handle Persian decimal separators (٫) and (/)
     function parseFaFloat(str) {
         if (str === null || str === undefined || str.trim() === '') return null;
         let s = str.toString().trim();
@@ -1008,7 +910,6 @@
         return isNaN(num) ? null : num;
     }
 
-    // Format English numbers to Persian digits for display
     function formatFaNum(num, maxDec = 2) {
         if (num === null || num === undefined || isNaN(num)) return '-';
         return new Intl.NumberFormat('fa-IR', { maximumFractionDigits: maxDec }).format(num);
@@ -1017,48 +918,28 @@
     function escapeHtml(unsafe) {
         if(!unsafe) return '';
         return unsafe.toString()
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
+             .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Calculations
     function calcSemesterStats(semester) {
-        let totalCredits = 0;
-        let totalPoints = 0;
-        let validCourses = 0;
-        let totalCreditsRegistered = 0;
-
+        let totalCredits = 0, totalPoints = 0, totalCreditsRegistered = 0;
         semester.courses.forEach(c => {
             if (c.credits > 0) {
                 totalCreditsRegistered += c.credits;
                 if (c.grade !== null && c.grade >= 0) {
                     totalCredits += c.credits;
                     totalPoints += (c.grade * c.credits);
-                    validCourses++;
                 }
             }
         });
-
         const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
-        return {
-            gpa,
-            totalCredits, // Credits with valid grades (for calc)
-            totalCreditsRegistered, // Total credits entered
-            totalPoints,
-            validCourses,
-            totalCourses: semester.courses.length,
-            hasValidData: totalCredits > 0
-        };
+        return { gpa, totalCredits, totalCreditsRegistered, totalCourses: semester.courses.length, hasValidData: totalCredits > 0 };
     }
 
     function calcGroupStats(groupOrSemestersArray) {
         let semesterIds = Array.isArray(groupOrSemestersArray) ? groupOrSemestersArray : groupOrSemestersArray.semesterIds;
-        let totalCredits = 0;
-        let totalPoints = 0;
-        
+        let totalCredits = 0, totalPoints = 0;
         semesterIds.forEach(sid => {
             const sem = state.semesters.find(s => s.id === sid);
             if (sem) {
@@ -1070,78 +951,67 @@
                 });
             }
         });
-
         const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
-        return { gpa, totalCredits, totalPoints, hasValidData: totalCredits > 0 };
+        return { gpa, totalCredits, hasValidData: totalCredits > 0 };
     }
 
-    // View Management
     function switchView(viewId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-        
-        const targetView = document.getElementById(viewId);
-        if (targetView) targetView.classList.add('active');
-        
+        document.getElementById(viewId).classList.add('active');
         const activeNav = document.querySelector(`.nav-link[data-target="${viewId}"]`);
         if (activeNav) activeNav.classList.add('active');
 
-        // Render appropriate content
         if (viewId === 'view-dashboard') renderDashboard();
         if (viewId === 'view-semesters') renderSemestersList();
         if (viewId === 'view-groups') renderGroupsList();
     }
 
-    // Event Listeners for Nav
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            switchView(e.target.dataset.target);
-        });
+        link.addEventListener('click', (e) => switchView(e.target.dataset.target));
     });
 
-    // Theme Toggle
     const themeBtn = document.getElementById('btn-theme');
+    const themeMeta = document.getElementById('theme-color-meta');
     let isDark = localStorage.getItem('theme') === 'dark';
-    if(isDark) document.documentElement.setAttribute('data-theme', 'dark');
+    
+    function updateTheme() {
+        if(isDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeMeta.setAttribute('content', '#0f172a'); // رنگ وضعیت بار اندروید در حالت تاریک
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            themeMeta.setAttribute('content', '#ffffff'); // رنگ وضعیت بار اندروید در حالت روشن
+        }
+    }
+    updateTheme();
     
     themeBtn.addEventListener('click', () => {
         isDark = !isDark;
-        if(isDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateTheme();
     });
 
-    // Toast Notifications
     function showToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         
-        let icon = '';
-        if (type === 'success') icon = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        else if (type === 'error') icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+        let icon = type === 'success' 
+            ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+            : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
         
-        toast.innerHTML = `${icon} <span>${message}</span>`;
+        toast.innerHTML = `${icon} <span style="font-weight:500;">${message}</span>`;
         container.appendChild(toast);
 
         setTimeout(() => {
-            toast.classList.add('fade-out');
+            toast.style.animation = 'slideUp 0.3s reverse forwards';
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 2500);
     }
 
-    // Modal Functions
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-    }
-    
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     function openConfirm(message, callback) {
         document.getElementById('confirm-message').textContent = message;
@@ -1154,62 +1024,33 @@
         closeModal('modal-confirm');
     });
 
-    // --- DOM RENDERERS ---
-
-    // 1. Dashboard
     function renderDashboard() {
         const statsGrid = document.getElementById('dashboard-stats');
-        const recentGrid = document.getElementById('dashboard-recent');
-        
-        const allSemesterIds = state.semesters.map(s => s.id);
-        const overallStats = calcGroupStats(allSemesterIds);
+        const overallStats = calcGroupStats(state.semesters.map(s => s.id));
         
         let totalCourses = 0;
         state.semesters.forEach(s => totalCourses += s.courses.length);
 
         statsGrid.innerHTML = `
             <div class="stat-card">
-                <div class="stat-card-title">معدل کل (تمامی ترم‌ها)</div>
+                <div class="stat-card-title">معدل کل</div>
                 <div class="stat-card-value">${overallStats.hasValidData ? formatFaNum(overallStats.gpa) : '-'}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-title">تعداد کل ترم‌ها</div>
+                <div class="stat-card-title">تعداد ترم‌ها</div>
                 <div class="stat-card-value">${formatFaNum(state.semesters.length, 0)}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-title">مجموع واحدهای مؤثر</div>
+                <div class="stat-card-title">واحدهای پاس شده</div>
                 <div class="stat-card-value">${formatFaNum(overallStats.totalCredits)}</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-card-title">تعداد کل درس‌ها</div>
-                <div class="stat-card-value">${formatFaNum(totalCourses, 0)}</div>
-            </div>
         `;
-
-        if (state.semesters.length === 0) {
-            recentGrid.innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1;">
-                    <div class="empty-icon">📚</div>
-                    <h3>هنوز ترمی اضافه نکرده‌اید!</h3>
-                    <p>برای شروع محاسبه معدل، اولین ترم تحصیلی خود را ایجاد کنید.</p>
-                    <button class="btn btn-primary" onclick="switchView('view-semesters'); openSemesterModal()">ایجاد اولین ترم</button>
-                </div>
-            `;
-        } else {
-            recentGrid.innerHTML = ''; // Clear
-        }
     }
 
-    // 2. Semesters List
     function renderSemestersList() {
         const container = document.getElementById('semesters-container');
         if (state.semesters.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">📝</div>
-                    <h3>لیست ترم‌ها خالی است</h3>
-                    <button class="btn btn-primary" onclick="openSemesterModal()">افزودن اولین ترم</button>
-                </div>`;
+            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">ترمی ثبت نشده است.</div>`;
             return;
         }
 
@@ -1220,34 +1061,23 @@
                 <div class="card" onclick="viewSemester('${sem.id}')">
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(sem.name)}</div>
-                        <span class="badge">${formatFaNum(stats.totalCourses, 0)} درس</span>
                     </div>
                     <div class="card-body">
                         <div class="card-row">
-                            <span>معدل ترم:</span>
+                            <span>معدل:</span>
                             <span style="color: var(--primary); font-weight: 700;">${stats.hasValidData ? formatFaNum(stats.gpa) : 'ناقص'}</span>
-                        </div>
-                        <div class="card-row">
-                            <span>تعداد واحد ثبت‌شده:</span>
-                            <span>${formatFaNum(stats.totalCreditsRegistered)}</span>
                         </div>
                     </div>
                     <div class="card-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-icon" title="ویرایش نام ترم" onclick="openSemesterModal('${sem.id}')">
-                            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        </button>
-                        <button class="btn btn-icon danger" title="حذف ترم" onclick="deleteSemester('${sem.id}')">
-                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
+                        <button class="btn btn-icon" onclick="openSemesterModal('${sem.id}')">ویرایش</button>
+                        <button class="btn btn-icon" style="color:var(--danger)" onclick="deleteSemester('${sem.id}')">حذف</button>
                     </div>
                 </div>
             `;
         });
-        html += '</div>';
-        container.innerHTML = html;
+        container.innerHTML = html + '</div>';
     }
 
-    // 3. Semester Detail & Courses
     function viewSemester(id) {
         currentSemesterId = id;
         renderSemesterDetail();
@@ -1256,43 +1086,30 @@
 
     function renderSemesterDetail() {
         const sem = state.semesters.find(s => s.id === currentSemesterId);
-        if (!sem) {
-            switchView('view-semesters');
-            return;
-        }
+        if (!sem) return switchView('view-semesters');
 
         document.getElementById('sd-title').textContent = sem.name;
-        
         const stats = calcSemesterStats(sem);
-        document.getElementById('sd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : 'نمره ناقص';
+        document.getElementById('sd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : '-';
         document.getElementById('sd-credits').textContent = formatFaNum(stats.totalCreditsRegistered);
-        document.getElementById('sd-courses-count').textContent = formatFaNum(stats.totalCourses, 0);
 
         const tbody = document.getElementById('courses-tbody');
         if (sem.courses.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center" style="padding: 32px; color: var(--text-muted);">هیچ درسی در این ترم ثبت نشده است.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">درسی ثبت نشده است.</td></tr>`;
             return;
         }
 
         let html = '';
         sem.courses.forEach(c => {
-            const hasGrade = c.grade !== null;
-            const points = hasGrade ? c.grade * c.credits : null;
-            
             html += `
                 <tr>
-                    <td style="font-weight: 500;">${escapeHtml(c.name)}</td>
-                    <td>${hasGrade ? formatFaNum(c.grade) : '<span style="color:var(--warning); font-size: 0.85rem;">وارد نشده</span>'}</td>
+                    <td style="font-weight: 500; white-space: normal;">${escapeHtml(c.name)}</td>
+                    <td>${c.grade !== null ? formatFaNum(c.grade) : '-'}</td>
                     <td>${formatFaNum(c.credits)}</td>
-                    <td>${hasGrade ? formatFaNum(points) : '-'}</td>
                     <td>
                         <div class="td-actions">
-                            <button class="btn-icon" title="ویرایش" onclick="openCourseModal('${c.id}')">
-                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            </button>
-                            <button class="btn-icon danger" title="حذف" onclick="deleteCourse('${c.id}')">
-                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            </button>
+                            <button class="btn-icon" onclick="openCourseModal('${c.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                            <button class="btn-icon" style="color:var(--danger)" onclick="deleteCourse('${c.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
                         </div>
                     </td>
                 </tr>
@@ -1301,17 +1118,10 @@
         tbody.innerHTML = html;
     }
 
-    // 4. Groups List
     function renderGroupsList() {
         const container = document.getElementById('groups-container');
         if (state.groups.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">📊</div>
-                    <h3>معدل تجمیعی ایجاد نشده است</h3>
-                    <p>شما می‌توانید چند ترم را در یک گروه دسته‌بندی کنید (مثلا علوم پایه) تا معدل کل آن‌ها به صورت دقیق محاسبه شود.</p>
-                    <button class="btn btn-primary" onclick="openGroupModal()">ایجاد اولین گروه</button>
-                </div>`;
+            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">گروهی ثبت نشده است.</div>`;
             return;
         }
 
@@ -1322,31 +1132,22 @@
                 <div class="card" onclick="viewGroup('${g.id}')">
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(g.name)}</div>
-                        <span class="badge">${formatFaNum(g.semesterIds.length, 0)} ترم</span>
                     </div>
                     <div class="card-body">
                         <div class="card-row">
-                            <span>معدل تجمیعی:</span>
+                            <span>معدل:</span>
                             <span style="color: var(--primary); font-weight: 700;">${stats.hasValidData ? formatFaNum(stats.gpa) : 'ناقص'}</span>
-                        </div>
-                        <div class="card-row">
-                            <span>واحدهای مؤثر:</span>
-                            <span>${formatFaNum(stats.totalCredits)}</span>
                         </div>
                     </div>
                     <div class="card-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-icon danger" title="حذف گروه" onclick="deleteGroup('${g.id}')">
-                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
+                        <button class="btn btn-icon" style="color:var(--danger)" onclick="deleteGroup('${g.id}')">حذف</button>
                     </div>
                 </div>
             `;
         });
-        html += '</div>';
-        container.innerHTML = html;
+        container.innerHTML = html + '</div>';
     }
 
-    // 5. Group Detail
     function viewGroup(id) {
         currentGroupId = id;
         renderGroupDetail();
@@ -1355,44 +1156,24 @@
 
     function renderGroupDetail() {
         const group = state.groups.find(g => g.id === currentGroupId);
-        if (!group) {
-            switchView('view-groups');
-            return;
-        }
+        if (!group) return switchView('view-groups');
 
         document.getElementById('gd-title').textContent = group.name;
-        
         const stats = calcGroupStats(group);
-        document.getElementById('gd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : 'داده ناکافی';
+        document.getElementById('gd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : '-';
         document.getElementById('gd-credits').textContent = formatFaNum(stats.totalCredits);
-        document.getElementById('gd-semesters-count').textContent = formatFaNum(group.semesterIds.length, 0);
 
         const container = document.getElementById('gd-semesters-container');
-        if (group.semesterIds.length === 0) {
-            container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;">ترمی برای این گروه انتخاب نشده است.</div>`;
-            return;
-        }
-
         let html = '';
         group.semesterIds.forEach(sid => {
             const sem = state.semesters.find(s => s.id === sid);
-            if (!sem) return; // Cleanup missing refs gracefully
-            
+            if (!sem) return;
             const sStats = calcSemesterStats(sem);
             html += `
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title" style="font-size: 1rem;">${escapeHtml(sem.name)}</div>
-                    </div>
-                    <div class="card-body" style="margin-bottom:0;">
-                        <div class="card-row">
-                            <span>معدل ترم:</span>
-                            <span style="font-weight: 700;">${sStats.hasValidData ? formatFaNum(sStats.gpa) : 'ناقص'}</span>
-                        </div>
-                        <div class="card-row">
-                            <span>واحدها:</span>
-                            <span>${formatFaNum(sStats.totalCredits)}</span>
-                        </div>
+                    <div class="card-header"><div class="card-title">${escapeHtml(sem.name)}</div></div>
+                    <div class="card-body" style="margin:0;">
+                        <div class="card-row"><span>معدل:</span><span style="font-weight: 700;">${sStats.hasValidData ? formatFaNum(sStats.gpa) : '-'}</span></div>
                     </div>
                 </div>
             `;
@@ -1400,77 +1181,52 @@
         container.innerHTML = html;
     }
 
-    // --- CRUD OPERATIONS ---
-
-    // Semesters
+    // Modal Operations (Open/Save/Delete)
     function openSemesterModal(id = null) {
         document.getElementById('ms-error').style.display = 'none';
         const form = document.getElementById('form-semester');
         form.reset();
-        
         if (id) {
             const sem = state.semesters.find(s => s.id === id);
             if (sem) {
                 document.getElementById('ms-id').value = sem.id;
                 document.getElementById('ms-name').value = sem.name;
-                document.getElementById('ms-title').textContent = 'ویرایش ترم';
             }
         } else {
             document.getElementById('ms-id').value = '';
-            document.getElementById('ms-title').textContent = 'افزودن ترم جدید';
         }
         openModal('modal-semester');
-        setTimeout(() => document.getElementById('ms-name').focus(), 100);
     }
 
     function saveSemester(e) {
         e.preventDefault();
         const idInput = document.getElementById('ms-id').value;
         const nameInput = document.getElementById('ms-name').value.trim();
-        
-        if (!nameInput) {
-            document.getElementById('ms-error').style.display = 'block';
-            return;
-        }
+        if (!nameInput) return document.getElementById('ms-error').style.display = 'block';
 
         if (idInput) {
             const sem = state.semesters.find(s => s.id === idInput);
             if(sem) sem.name = nameInput;
-            showToast('نام ترم بروزرسانی شد.');
+            showToast('ویرایش شد.');
         } else {
-            state.semesters.push({
-                id: generateId(),
-                name: nameInput,
-                courses: []
-            });
-            showToast('ترم جدید اضافه شد.');
+            state.semesters.push({ id: generateId(), name: nameInput, courses: [] });
+            showToast('ترم اضافه شد.');
         }
-
-        saveData();
-        renderSemestersList();
-        closeModal('modal-semester');
+        saveData(); renderSemestersList(); closeModal('modal-semester');
     }
 
     function deleteSemester(id) {
-        openConfirm('آیا از حذف این ترم و تمامی دروس آن مطمئن هستید؟ این کار قابل بازگشت نیست.', () => {
+        openConfirm('حذف ترم و تمامی دروس آن؟', () => {
             state.semesters = state.semesters.filter(s => s.id !== id);
-            // Clean up group references
-            state.groups.forEach(g => {
-                g.semesterIds = g.semesterIds.filter(sid => sid !== id);
-            });
-            saveData();
-            renderSemestersList();
-            showToast('ترم با موفقیت حذف شد.');
+            state.groups.forEach(g => g.semesterIds = g.semesterIds.filter(sid => sid !== id));
+            saveData(); renderSemestersList(); showToast('حذف شد.');
         });
     }
 
-    // Courses
     function openCourseModal(id = null) {
         document.getElementById('mc-grade-error').style.display = 'none';
         document.getElementById('mc-credits-error').style.display = 'none';
-        const form = document.getElementById('form-course');
-        form.reset();
-        
+        document.getElementById('form-course').reset();
         const sem = state.semesters.find(s => s.id === currentSemesterId);
         
         if (id && sem) {
@@ -1480,236 +1236,132 @@
                 document.getElementById('mc-name').value = c.name;
                 document.getElementById('mc-grade').value = c.grade !== null ? c.grade : '';
                 document.getElementById('mc-credits').value = c.credits;
-                document.getElementById('mc-title').textContent = 'ویرایش درس';
             }
         } else {
             document.getElementById('mc-id').value = '';
-            document.getElementById('mc-title').textContent = 'افزودن درس';
         }
         openModal('modal-course');
-        setTimeout(() => document.getElementById('mc-name').focus(), 100);
     }
 
     function saveCourse(e) {
         e.preventDefault();
-        
         const idInput = document.getElementById('mc-id').value;
         const nameInput = document.getElementById('mc-name').value.trim();
-        const gradeRaw = document.getElementById('mc-grade').value;
-        const creditsRaw = document.getElementById('mc-credits').value;
-        
-        const grade = parseFaFloat(gradeRaw);
-        const credits = parseFaFloat(creditsRaw);
+        const grade = parseFaFloat(document.getElementById('mc-grade').value);
+        const credits = parseFaFloat(document.getElementById('mc-credits').value);
         
         let hasError = false;
-        if (grade !== null && (grade < 0 || grade > 20)) {
-            document.getElementById('mc-grade-error').style.display = 'block';
-            hasError = true;
-        } else {
-            document.getElementById('mc-grade-error').style.display = 'none';
-        }
-
-        if (credits === null || credits <= 0) {
-            document.getElementById('mc-credits-error').style.display = 'block';
-            hasError = true;
-        } else {
-            document.getElementById('mc-credits-error').style.display = 'none';
-        }
-
+        if (grade !== null && (grade < 0 || grade > 20)) { document.getElementById('mc-grade-error').style.display = 'block'; hasError = true; }
+        if (credits === null || credits <= 0) { document.getElementById('mc-credits-error').style.display = 'block'; hasError = true; }
         if (hasError) return;
 
         const sem = state.semesters.find(s => s.id === currentSemesterId);
-        if (!sem) return;
-
         if (idInput) {
             const c = sem.courses.find(x => x.id === idInput);
-            if(c) {
-                c.name = nameInput;
-                c.grade = grade;
-                c.credits = credits;
-            }
-            showToast('درس بروزرسانی شد.');
+            if(c) { c.name = nameInput; c.grade = grade; c.credits = credits; }
+            showToast('بروزرسانی شد.');
         } else {
-            sem.courses.push({
-                id: generateId(),
-                name: nameInput,
-                grade: grade,
-                credits: credits
-            });
-            showToast('درس جدید اضافه شد.');
+            sem.courses.push({ id: generateId(), name: nameInput, grade, credits });
+            showToast('درس اضافه شد.');
         }
-
-        saveData();
-        renderSemesterDetail();
-        closeModal('modal-course');
+        saveData(); renderSemesterDetail(); closeModal('modal-course');
     }
 
     function deleteCourse(id) {
-        openConfirm('آیا از حذف این درس اطمینان دارید؟', () => {
+        openConfirm('حذف این درس؟', () => {
             const sem = state.semesters.find(s => s.id === currentSemesterId);
-            if (sem) {
-                sem.courses = sem.courses.filter(c => c.id !== id);
-                saveData();
-                renderSemesterDetail();
-                showToast('درس حذف شد.');
-            }
+            if (sem) { sem.courses = sem.courses.filter(c => c.id !== id); saveData(); renderSemesterDetail(); showToast('درس حذف شد.'); }
         });
     }
 
-    // Groups
     function openGroupModal(id = null) {
         document.getElementById('mg-error').style.display = 'none';
-        const form = document.getElementById('form-group');
-        form.reset();
+        document.getElementById('form-group').reset();
         
-        // Generate Checkboxes
         const listDiv = document.getElementById('mg-semesters-list');
-        if (state.semesters.length === 0) {
-            listDiv.innerHTML = '<div style="color: var(--text-muted); padding: 8px;">هیچ ترمی برای انتخاب وجود ندارد.</div>';
-        } else {
-            let cbHtml = '';
-            state.semesters.forEach(s => {
-                cbHtml += `
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="group-sems" value="${s.id}">
-                        <span>${escapeHtml(s.name)}</span>
-                    </label>
-                `;
-            });
-            listDiv.innerHTML = cbHtml;
-        }
+        listDiv.innerHTML = state.semesters.map(s => `
+            <label class="checkbox-item"><input type="checkbox" name="group-sems" value="${s.id}"> <span>${escapeHtml(s.name)}</span></label>
+        `).join('');
         
         if (id) {
             const group = state.groups.find(g => g.id === id);
             if (group) {
                 document.getElementById('mg-id').value = group.id;
                 document.getElementById('mg-name').value = group.name;
-                document.getElementById('mg-title').textContent = 'ویرایش معدل تجمیعی';
-                
-                // Check included
-                const checkboxes = document.querySelectorAll('input[name="group-sems"]');
-                checkboxes.forEach(cb => {
-                    if (group.semesterIds.includes(cb.value)) {
-                        cb.checked = true;
-                    }
+                document.querySelectorAll('input[name="group-sems"]').forEach(cb => {
+                    if (group.semesterIds.includes(cb.value)) cb.checked = true;
                 });
             }
         } else {
             document.getElementById('mg-id').value = '';
-            document.getElementById('mg-title').textContent = 'ایجاد معدل تجمیعی جدید';
         }
         openModal('modal-group');
     }
 
-    function editCurrentGroup() {
-        if(currentGroupId) openGroupModal(currentGroupId);
-    }
+    function editCurrentGroup() { if(currentGroupId) openGroupModal(currentGroupId); }
 
     function saveGroup(e) {
         e.preventDefault();
-        
         const idInput = document.getElementById('mg-id').value;
         const nameInput = document.getElementById('mg-name').value.trim();
-        
         const checked = Array.from(document.querySelectorAll('input[name="group-sems"]:checked')).map(cb => cb.value);
         
-        if (checked.length === 0) {
-            document.getElementById('mg-error').style.display = 'block';
-            return;
-        }
+        if (checked.length === 0) return document.getElementById('mg-error').style.display = 'block';
 
         if (idInput) {
             const group = state.groups.find(g => g.id === idInput);
-            if(group) {
-                group.name = nameInput;
-                group.semesterIds = checked;
-            }
+            if(group) { group.name = nameInput; group.semesterIds = checked; }
             showToast('گروه بروزرسانی شد.');
-            // If we are currently viewing this group, re-render its detail view
-            if (currentGroupId === idInput) {
-                renderGroupDetail();
-            }
+            if (currentGroupId === idInput) renderGroupDetail();
         } else {
-            state.groups.push({
-                id: generateId(),
-                name: nameInput,
-                semesterIds: checked
-            });
-            showToast('گروه جدید ایجاد شد.');
+            state.groups.push({ id: generateId(), name: nameInput, semesterIds: checked });
+            showToast('گروه ایجاد شد.');
         }
-
-        saveData();
-        renderGroupsList();
-        closeModal('modal-group');
+        saveData(); renderGroupsList(); closeModal('modal-group');
     }
 
     function deleteGroup(id) {
-        openConfirm('آیا از حذف این معدل تجمیعی اطمینان دارید؟', () => {
+        openConfirm('حذف این معدل تجمیعی؟', () => {
             state.groups = state.groups.filter(g => g.id !== id);
-            saveData();
-            renderGroupsList();
-            showToast('معدل تجمیعی حذف شد.');
+            saveData(); renderGroupsList(); showToast('حذف شد.');
         });
     }
 
-    // Backup & Restore
     function exportData() {
-        const dataStr = JSON.stringify(state, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
         const a = document.createElement('a');
-        a.href = url;
-        const date = new Date().toISOString().split('T')[0];
-        a.download = `gpa_backup_${date}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        a.href = URL.createObjectURL(blob);
+        a.download = `gpa_backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
 
     function handleImport(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 const imported = JSON.parse(e.target.result);
-                if (imported && Array.isArray(imported.semesters) && Array.isArray(imported.groups)) {
-                    openConfirm('آیا مطمئن هستید؟ تمام داده‌های فعلی شما با این فایل جایگزین خواهد شد.', () => {
-                        state = imported;
-                        saveData();
-                        showToast('اطلاعات با موفقیت بازیابی شد.');
-                        switchView('view-dashboard');
+                if (imported && Array.isArray(imported.semesters)) {
+                    openConfirm('تمام داده‌های فعلی جایگزین خواهد شد، مطمئن هستید؟', () => {
+                        state = imported; saveData(); showToast('اطلاعات بازیابی شد.'); switchView('view-dashboard');
                     });
-                } else {
-                    showToast('فایل انتخابی نامعتبر است.', 'error');
                 }
-            } catch (err) {
-                showToast('خطا در خواندن فایل. لطفاً یک فایل معتبر انتخاب کنید.', 'error');
-            }
+            } catch (err) { showToast('فایل نامعتبر است.', 'error'); }
         };
         reader.readAsText(file);
-        // Reset input
         event.target.value = '';
     }
 
     function confirmWipeData() {
-        openConfirm('توجه: این عملیات غیرقابل بازگشت است! آیا از حذف تمامی ترم‌ها و گروه‌ها کاملاً مطمئن هستید؟', () => {
-            state = { semesters: [], groups: [] };
-            saveData();
-            showToast('تمامی اطلاعات با موفقیت حذف شد.');
-            switchView('view-dashboard');
+        openConfirm('هشدار: کل اطلاعات پاک خواهند شد! مطمئن هستید؟', () => {
+            state = { semesters: [], groups: [] }; saveData(); showToast('اطلاعات پاک شد.'); switchView('view-dashboard');
         });
     }
 
-    // Init
     window.addEventListener('DOMContentLoaded', () => {
-        loadData();
-        renderDashboard();
+        loadData(); renderDashboard();
     });
-
 </script>
 </body>
 </html>
