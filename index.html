@@ -2,12 +2,9 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- بهینه‌سازی Viewport برای جلوگیری از زوم تصادفی در اندروید -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- تنظیمات PWA برای اندروید -->
+    <meta name="theme-color" id="meta-theme-color" content="#4f46e5">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#4f46e5" id="theme-color-meta">
-    
     <title>محاسبه‌گر معدل دانشجویان علوم پزشکی</title>
 
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
@@ -47,8 +44,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Vazirmatn', Tahoma, sans-serif;
-            /* حذف هایلایت چشمک‌زن پیش‌فرض لمس در اندروید */
-            -webkit-tap-highlight-color: transparent; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -56,8 +52,18 @@
             color: var(--text-main);
             line-height: 1.6;
             transition: var(--transition);
-            /* جلوگیری از رفرش شدن صفحه با کشیدن به پایین در کروم اندروید */
-            overscroll-behavior-y: none;
+            overscroll-behavior-y: contain;
+        }
+
+        /* Android App Optimizations */
+        button, .nav-link, .card, .stat-card, header, .modal-header, .summary-banner, th {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        input, td {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         /* Layout */
@@ -99,13 +105,6 @@
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 4px;
-            /* اسکرول نرم در اندروید و پنهان کردن نوار اسکرول */
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        
-        .nav-links::-webkit-scrollbar {
-            display: none;
         }
 
         .nav-link {
@@ -119,9 +118,6 @@
             cursor: pointer;
             transition: var(--transition);
             white-space: nowrap;
-            /* بهبود تاچ */
-            touch-action: manipulation;
-            min-height: 44px;
         }
 
         .nav-link:hover {
@@ -146,8 +142,6 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            min-height: 44px;
-            min-width: 44px;
         }
         
         .theme-toggle:hover {
@@ -231,11 +225,12 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            touch-action: manipulation;
         }
 
-        .card:active {
-            transform: scale(0.98);
+        .card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+            border-color: var(--primary);
         }
 
         .card-header {
@@ -289,22 +284,19 @@
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 500;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             border: none;
             transition: var(--transition);
-            touch-action: manipulation;
-            /* حداقل اندازه استاندارد برای کلیک در موبایل */
-            min-height: 48px;
-        }
-
-        .btn:active {
-            transform: scale(0.96);
         }
 
         .btn-primary {
             background-color: var(--primary);
             color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
         }
 
         .btn-outline {
@@ -313,15 +305,21 @@
             color: var(--text-main);
         }
 
+        .btn-outline:hover {
+            background-color: var(--bg);
+            border-color: var(--text-muted);
+        }
+
         .btn-danger {
             background-color: #fee2e2;
             color: var(--danger);
         }
-        
-        [data-theme="dark"] .btn-danger {
-            background-color: rgba(239, 68, 68, 0.2);
-        }
 
+        .btn-danger:hover {
+            background-color: #fca5a5;
+            color: var(--danger-hover);
+        }
+        
         .btn-icon {
             padding: 8px;
             border-radius: 6px;
@@ -330,11 +328,18 @@
             cursor: pointer;
             color: var(--text-muted);
             transition: var(--transition);
-            min-height: 44px;
-            min-width: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+        
+        .btn-icon:hover {
+            background-color: var(--bg);
+            color: var(--text-main);
+            border-color: var(--border);
+        }
+
+        .btn-icon.danger:hover {
+            background-color: #fee2e2;
+            color: var(--danger);
+            border-color: #fca5a5;
         }
 
         /* Tables */
@@ -344,7 +349,6 @@
             border-radius: var(--radius);
             overflow-x: auto;
             box-shadow: var(--shadow-sm);
-            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -361,1007 +365,3 @@
 
         th {
             background-color: var(--bg);
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .td-actions {
-            display: flex;
-            gap: 4px;
-        }
-
-        /* Forms & Inputs */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-main);
-            font-size: 0.95rem;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[inputmode="decimal"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-size: 1rem;
-            transition: var(--transition);
-            outline: none;
-            /* ارتفاع مناسب فیلد در موبایل */
-            min-height: 48px;
-            -webkit-appearance: none;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 4px;
-            display: none;
-        }
-
-        .checkbox-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: var(--bg);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .checkbox-item input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-        }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-            backdrop-filter: blur(3px);
-            padding: 16px;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background-color: var(--surface);
-            border-radius: var(--radius);
-            width: 100%;
-            max-width: 500px;
-            box-shadow: var(--shadow-lg);
-            transform: scale(0.95) translateY(20px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            max-height: 90vh;
-        }
-
-        .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            line-height: 1;
-            padding: 8px;
-            margin: -8px;
-            min-width: 44px;
-            min-height: 44px;
-        }
-
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        /* Toasts */
-        .toast-container {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            right: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 2000;
-            pointer-events: none;
-        }
-
-        .toast {
-            background-color: var(--surface);
-            border-right: 4px solid var(--primary);
-            color: var(--text-main);
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateY(100%);
-            opacity: 0;
-            animation: slideUp 0.3s forwards;
-            pointer-events: auto;
-        }
-
-        @keyframes slideUp {
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* SVG Icons */
-        svg {
-            width: 22px;
-            height: 22px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        @media (max-width: 768px) {
-            .app-container { padding: 12px; }
-            header { flex-direction: column; align-items: stretch; }
-            .nav-links { justify-content: flex-start; margin-top: 8px;}
-            
-            /* برای اندروید دیالوگ‌ها را از پایین باز می‌کنیم */
-            .modal { 
-                max-width: 100%; 
-                border-radius: 20px 20px 0 0; 
-                margin-top: auto;
-                max-height: 85vh;
-            }
-            .modal-overlay { 
-                padding: 0; 
-                align-items: flex-end;
-            }
-            .toast-container {
-                left: 16px;
-                right: 16px;
-                bottom: 16px;
-            }
-            .toast {
-                min-width: auto;
-                width: 100%;
-            }
-        }
-        
-        .settings-section {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="app-container">
-    <header>
-        <div class="logo">
-            <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-            معدل‌یار علوم پزشکی
-        </div>
-        <nav class="nav-links">
-            <button class="nav-link active" data-target="view-dashboard">داشبورد</button>
-            <button class="nav-link" data-target="view-semesters">ترم‌ها</button>
-            <button class="nav-link" data-target="view-groups">گروه‌ها</button>
-            <button class="nav-link" data-target="view-settings">تنظیمات</button>
-        </nav>
-        <button class="theme-toggle" id="btn-theme" title="تغییر تم">
-            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </button>
-    </header>
-
-    <main>
-        <!-- Dashboard View -->
-        <div id="view-dashboard" class="view-section active">
-            <div class="section-header">
-                <h1 class="section-title">داشبورد</h1>
-            </div>
-            <div class="stats-grid" id="dashboard-stats"></div>
-            <div class="cards-grid" id="dashboard-recent"></div>
-        </div>
-
-        <!-- Semesters List View -->
-        <div id="view-semesters" class="view-section">
-            <div class="section-header">
-                <h1 class="section-title">ترم‌ها</h1>
-                <button class="btn btn-primary" onclick="openSemesterModal()">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    ترم جدید
-                </button>
-            </div>
-            <div id="semesters-container"></div>
-        </div>
-
-        <!-- Semester Detail View -->
-        <div id="view-semester-detail" class="view-section">
-            <div class="section-header" style="margin-bottom: 16px;">
-                <button class="btn btn-outline" onclick="switchView('view-semesters')">
-                    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    بازگشت
-                </button>
-                <h1 class="section-title" id="sd-title" style="font-size: 1.25rem;">جزئیات ترم</h1>
-            </div>
-
-            <div class="stats-grid" style="margin-bottom: 24px;">
-                <div class="stat-card" style="padding: 16px;">
-                    <div class="stat-card-title">معدل ترم</div>
-                    <div class="stat-card-value" id="sd-gpa">-</div>
-                </div>
-                <div class="stat-card" style="padding: 16px;">
-                    <div class="stat-card-title">واحدهای ثبت‌شده</div>
-                    <div class="stat-card-value" id="sd-credits">-</div>
-                </div>
-            </div>
-
-            <div class="section-header">
-                <h2 class="section-title" style="font-size: 1.1rem;">لیست دروس</h2>
-                <button class="btn btn-primary" onclick="openCourseModal()">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    افزودن درس
-                </button>
-            </div>
-
-            <div class="table-container">
-                <table id="courses-table">
-                    <thead>
-                        <tr>
-                            <th>نام درس</th>
-                            <th>نمره</th>
-                            <th>واحد</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="courses-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Groups List View -->
-        <div id="view-groups" class="view-section">
-            <div class="section-header">
-                <h1 class="section-title">معدل‌های تجمیعی</h1>
-                <button class="btn btn-primary" onclick="openGroupModal()">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    گروه جدید
-                </button>
-            </div>
-            <div id="groups-container"></div>
-        </div>
-
-        <!-- Group Detail View -->
-        <div id="view-group-detail" class="view-section">
-            <div class="section-header" style="margin-bottom: 16px;">
-                <button class="btn btn-outline" onclick="switchView('view-groups')">
-                    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    بازگشت
-                </button>
-                <h1 class="section-title" id="gd-title" style="font-size: 1.25rem;">جزئیات معدل</h1>
-            </div>
-
-            <div class="stats-grid" style="margin-bottom: 24px;">
-                <div class="stat-card" style="padding: 16px;">
-                    <div class="stat-card-title">معدل تجمیعی</div>
-                    <div class="stat-card-value" id="gd-gpa">-</div>
-                </div>
-                <div class="stat-card" style="padding: 16px;">
-                    <div class="stat-card-title">واحدهای مؤثر</div>
-                    <div class="stat-card-value" id="gd-credits">-</div>
-                </div>
-            </div>
-
-            <div class="section-header">
-                <h2 class="section-title" style="font-size: 1.1rem;">ترم‌های این گروه</h2>
-                <button class="btn btn-outline" onclick="editCurrentGroup()">
-                    ویرایش
-                </button>
-            </div>
-
-            <div class="cards-grid" id="gd-semesters-container"></div>
-        </div>
-
-        <!-- Settings View -->
-        <div id="view-settings" class="view-section">
-            <div class="section-header">
-                <h1 class="section-title">تنظیمات و داده‌ها</h1>
-            </div>
-            
-            <div class="settings-section">
-                <h2 class="card-title" style="margin-bottom: 16px;">پشتیبان‌گیری (Export)</h2>
-                <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
-                    دانلود فایل پشتیبان (JSON)
-                </button>
-            </div>
-
-            <div class="settings-section">
-                <h2 class="card-title" style="margin-bottom: 16px;">بازیابی اطلاعات (Import)</h2>
-                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImport(event)">
-                <button class="btn btn-outline" onclick="document.getElementById('import-file').click()" style="width: 100%;">
-                    انتخاب فایل و بازیابی
-                </button>
-            </div>
-
-            <div class="settings-section" style="border-color: var(--danger);">
-                <h2 class="card-title" style="margin-bottom: 16px; color: var(--danger);">حذف اطلاعات</h2>
-                <button class="btn btn-danger" onclick="confirmWipeData()" style="width: 100%;">
-                    پاک کردن کل اطلاعات برنامه
-                </button>
-            </div>
-        </div>
-    </main>
-</div>
-
-<!-- Modals -->
-<!-- Semester Modal -->
-<div class="modal-overlay" id="modal-semester">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title" id="ms-title">افزودن ترم</div>
-            <button class="modal-close" onclick="closeModal('modal-semester')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form id="form-semester" onsubmit="saveSemester(event)">
-                <input type="hidden" id="ms-id">
-                <div class="form-group">
-                    <label for="ms-name">نام ترم</label>
-                    <input type="text" id="ms-name" required autocomplete="off" placeholder="مثال: ترم پاییز ۱۴۰۲">
-                    <div class="error-message" id="ms-error">وارد کردن نام ترم الزامی است.</div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('modal-semester')">انصراف</button>
-            <button class="btn btn-primary" onclick="document.getElementById('form-semester').requestSubmit()">ذخیره</button>
-        </div>
-    </div>
-</div>
-
-<!-- Course Modal (با inputmode بهینه برای اندروید) -->
-<div class="modal-overlay" id="modal-course">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title" id="mc-title">افزودن درس</div>
-            <button class="modal-close" onclick="closeModal('modal-course')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form id="form-course" onsubmit="saveCourse(event)">
-                <input type="hidden" id="mc-id">
-                <div class="form-group">
-                    <label for="mc-name">نام درس</label>
-                    <input type="text" id="mc-name" required autocomplete="off" placeholder="مثال: آناتومی">
-                </div>
-                <div class="form-group">
-                    <label for="mc-grade">نمره</label>
-                    <!-- تغییر به inputmode decimal برای باز شدن کیبورد عددی در اندروید -->
-                    <input type="text" inputmode="decimal" id="mc-grade" autocomplete="off" placeholder="مثال: 18.5">
-                    <div class="error-message" id="mc-grade-error">نمره باید بین ۰ تا ۲۰ باشد.</div>
-                </div>
-                <div class="form-group">
-                    <label for="mc-credits">تعداد واحد</label>
-                    <!-- تغییر به inputmode numeric برای کیبورد عددی در اندروید -->
-                    <input type="text" inputmode="numeric" id="mc-credits" required autocomplete="off" placeholder="مثال: 3">
-                    <div class="error-message" id="mc-credits-error">تعداد واحد نامعتبر است.</div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('modal-course')">انصراف</button>
-            <button class="btn btn-primary" onclick="document.getElementById('form-course').requestSubmit()">ذخیره</button>
-        </div>
-    </div>
-</div>
-
-<!-- Group Modal -->
-<div class="modal-overlay" id="modal-group">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title" id="mg-title">ایجاد معدل تجمیعی</div>
-            <button class="modal-close" onclick="closeModal('modal-group')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form id="form-group" onsubmit="saveGroup(event)">
-                <input type="hidden" id="mg-id">
-                <div class="form-group">
-                    <label for="mg-name">نام گروه</label>
-                    <input type="text" id="mg-name" required autocomplete="off" placeholder="مثال: علوم پایه">
-                </div>
-                <div class="form-group">
-                    <label>انتخاب ترم‌ها:</label>
-                    <div id="mg-semesters-list" class="checkbox-list"></div>
-                    <div class="error-message" id="mg-error">حداقل یک ترم انتخاب کنید.</div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('modal-group')">انصراف</button>
-            <button class="btn btn-primary" onclick="document.getElementById('form-group').requestSubmit()">ذخیره</button>
-        </div>
-    </div>
-</div>
-
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="modal-confirm">
-    <div class="modal" style="max-width: 400px;">
-        <div class="modal-header">
-            <div class="modal-title">تایید عملیات</div>
-            <button class="modal-close" onclick="closeModal('modal-confirm')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p id="confirm-message" style="margin-top: 10px;">آیا اطمینان دارید؟</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('modal-confirm')">خیر</button>
-            <button class="btn btn-danger" id="confirm-btn">بله، حذف کن</button>
-        </div>
-    </div>
-</div>
-
-<div class="toast-container" id="toast-container"></div>
-
-<script>
-    const STORAGE_KEY = 'gpa_app_data_v1';
-    let state = { semesters: [], groups: [] };
-    let currentSemesterId = null;
-    let currentGroupId = null;
-    let confirmAction = null;
-
-    function loadData() {
-        try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                const parsed = JSON.parse(data);
-                if (parsed.semesters) state.semesters = parsed.semesters;
-                if (parsed.groups) state.groups = parsed.groups;
-            }
-        } catch (e) {
-            showToast('خطا در بارگذاری اطلاعات.', 'error');
-        }
-    }
-
-    function saveData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
-
-    function parseFaFloat(str) {
-        if (str === null || str === undefined || str.trim() === '') return null;
-        let s = str.toString().trim();
-        const fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        const ar = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-        for (let i = 0; i < 10; i++) {
-            s = s.replace(new RegExp(fa[i], 'g'), i).replace(new RegExp(ar[i], 'g'), i);
-        }
-        s = s.replace(/٫/g, '.').replace(/\//g, '.');
-        const num = parseFloat(s);
-        return isNaN(num) ? null : num;
-    }
-
-    function formatFaNum(num, maxDec = 2) {
-        if (num === null || num === undefined || isNaN(num)) return '-';
-        return new Intl.NumberFormat('fa-IR', { maximumFractionDigits: maxDec }).format(num);
-    }
-
-    function escapeHtml(unsafe) {
-        if(!unsafe) return '';
-        return unsafe.toString()
-             .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
-    function calcSemesterStats(semester) {
-        let totalCredits = 0, totalPoints = 0, totalCreditsRegistered = 0;
-        semester.courses.forEach(c => {
-            if (c.credits > 0) {
-                totalCreditsRegistered += c.credits;
-                if (c.grade !== null && c.grade >= 0) {
-                    totalCredits += c.credits;
-                    totalPoints += (c.grade * c.credits);
-                }
-            }
-        });
-        const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
-        return { gpa, totalCredits, totalCreditsRegistered, totalCourses: semester.courses.length, hasValidData: totalCredits > 0 };
-    }
-
-    function calcGroupStats(groupOrSemestersArray) {
-        let semesterIds = Array.isArray(groupOrSemestersArray) ? groupOrSemestersArray : groupOrSemestersArray.semesterIds;
-        let totalCredits = 0, totalPoints = 0;
-        semesterIds.forEach(sid => {
-            const sem = state.semesters.find(s => s.id === sid);
-            if (sem) {
-                sem.courses.forEach(c => {
-                    if (c.credits > 0 && c.grade !== null && c.grade >= 0) {
-                        totalCredits += c.credits;
-                        totalPoints += (c.grade * c.credits);
-                    }
-                });
-            }
-        });
-        const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
-        return { gpa, totalCredits, hasValidData: totalCredits > 0 };
-    }
-
-    function switchView(viewId) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        const activeNav = document.querySelector(`.nav-link[data-target="${viewId}"]`);
-        if (activeNav) activeNav.classList.add('active');
-
-        if (viewId === 'view-dashboard') renderDashboard();
-        if (viewId === 'view-semesters') renderSemestersList();
-        if (viewId === 'view-groups') renderGroupsList();
-    }
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', (e) => switchView(e.target.dataset.target));
-    });
-
-    const themeBtn = document.getElementById('btn-theme');
-    const themeMeta = document.getElementById('theme-color-meta');
-    let isDark = localStorage.getItem('theme') === 'dark';
-    
-    function updateTheme() {
-        if(isDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeMeta.setAttribute('content', '#0f172a'); // رنگ وضعیت بار اندروید در حالت تاریک
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-            themeMeta.setAttribute('content', '#ffffff'); // رنگ وضعیت بار اندروید در حالت روشن
-        }
-    }
-    updateTheme();
-    
-    themeBtn.addEventListener('click', () => {
-        isDark = !isDark;
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateTheme();
-    });
-
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        
-        let icon = type === 'success' 
-            ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>'
-            : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
-        
-        toast.innerHTML = `${icon} <span style="font-weight:500;">${message}</span>`;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = 'slideUp 0.3s reverse forwards';
-            setTimeout(() => toast.remove(), 300);
-        }, 2500);
-    }
-
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-    function openConfirm(message, callback) {
-        document.getElementById('confirm-message').textContent = message;
-        confirmAction = callback;
-        openModal('modal-confirm');
-    }
-
-    document.getElementById('confirm-btn').addEventListener('click', () => {
-        if(confirmAction) confirmAction();
-        closeModal('modal-confirm');
-    });
-
-    function renderDashboard() {
-        const statsGrid = document.getElementById('dashboard-stats');
-        const overallStats = calcGroupStats(state.semesters.map(s => s.id));
-        
-        let totalCourses = 0;
-        state.semesters.forEach(s => totalCourses += s.courses.length);
-
-        statsGrid.innerHTML = `
-            <div class="stat-card">
-                <div class="stat-card-title">معدل کل</div>
-                <div class="stat-card-value">${overallStats.hasValidData ? formatFaNum(overallStats.gpa) : '-'}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card-title">تعداد ترم‌ها</div>
-                <div class="stat-card-value">${formatFaNum(state.semesters.length, 0)}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card-title">واحدهای پاس شده</div>
-                <div class="stat-card-value">${formatFaNum(overallStats.totalCredits)}</div>
-            </div>
-        `;
-    }
-
-    function renderSemestersList() {
-        const container = document.getElementById('semesters-container');
-        if (state.semesters.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">ترمی ثبت نشده است.</div>`;
-            return;
-        }
-
-        let html = '<div class="cards-grid">';
-        state.semesters.forEach(sem => {
-            const stats = calcSemesterStats(sem);
-            html += `
-                <div class="card" onclick="viewSemester('${sem.id}')">
-                    <div class="card-header">
-                        <div class="card-title">${escapeHtml(sem.name)}</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-row">
-                            <span>معدل:</span>
-                            <span style="color: var(--primary); font-weight: 700;">${stats.hasValidData ? formatFaNum(stats.gpa) : 'ناقص'}</span>
-                        </div>
-                    </div>
-                    <div class="card-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-icon" onclick="openSemesterModal('${sem.id}')">ویرایش</button>
-                        <button class="btn btn-icon" style="color:var(--danger)" onclick="deleteSemester('${sem.id}')">حذف</button>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html + '</div>';
-    }
-
-    function viewSemester(id) {
-        currentSemesterId = id;
-        renderSemesterDetail();
-        switchView('view-semester-detail');
-    }
-
-    function renderSemesterDetail() {
-        const sem = state.semesters.find(s => s.id === currentSemesterId);
-        if (!sem) return switchView('view-semesters');
-
-        document.getElementById('sd-title').textContent = sem.name;
-        const stats = calcSemesterStats(sem);
-        document.getElementById('sd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : '-';
-        document.getElementById('sd-credits').textContent = formatFaNum(stats.totalCreditsRegistered);
-
-        const tbody = document.getElementById('courses-tbody');
-        if (sem.courses.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">درسی ثبت نشده است.</td></tr>`;
-            return;
-        }
-
-        let html = '';
-        sem.courses.forEach(c => {
-            html += `
-                <tr>
-                    <td style="font-weight: 500; white-space: normal;">${escapeHtml(c.name)}</td>
-                    <td>${c.grade !== null ? formatFaNum(c.grade) : '-'}</td>
-                    <td>${formatFaNum(c.credits)}</td>
-                    <td>
-                        <div class="td-actions">
-                            <button class="btn-icon" onclick="openCourseModal('${c.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                            <button class="btn-icon" style="color:var(--danger)" onclick="deleteCourse('${c.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-        tbody.innerHTML = html;
-    }
-
-    function renderGroupsList() {
-        const container = document.getElementById('groups-container');
-        if (state.groups.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">گروهی ثبت نشده است.</div>`;
-            return;
-        }
-
-        let html = '<div class="cards-grid">';
-        state.groups.forEach(g => {
-            const stats = calcGroupStats(g);
-            html += `
-                <div class="card" onclick="viewGroup('${g.id}')">
-                    <div class="card-header">
-                        <div class="card-title">${escapeHtml(g.name)}</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-row">
-                            <span>معدل:</span>
-                            <span style="color: var(--primary); font-weight: 700;">${stats.hasValidData ? formatFaNum(stats.gpa) : 'ناقص'}</span>
-                        </div>
-                    </div>
-                    <div class="card-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-icon" style="color:var(--danger)" onclick="deleteGroup('${g.id}')">حذف</button>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html + '</div>';
-    }
-
-    function viewGroup(id) {
-        currentGroupId = id;
-        renderGroupDetail();
-        switchView('view-group-detail');
-    }
-
-    function renderGroupDetail() {
-        const group = state.groups.find(g => g.id === currentGroupId);
-        if (!group) return switchView('view-groups');
-
-        document.getElementById('gd-title').textContent = group.name;
-        const stats = calcGroupStats(group);
-        document.getElementById('gd-gpa').textContent = stats.hasValidData ? formatFaNum(stats.gpa) : '-';
-        document.getElementById('gd-credits').textContent = formatFaNum(stats.totalCredits);
-
-        const container = document.getElementById('gd-semesters-container');
-        let html = '';
-        group.semesterIds.forEach(sid => {
-            const sem = state.semesters.find(s => s.id === sid);
-            if (!sem) return;
-            const sStats = calcSemesterStats(sem);
-            html += `
-                <div class="card">
-                    <div class="card-header"><div class="card-title">${escapeHtml(sem.name)}</div></div>
-                    <div class="card-body" style="margin:0;">
-                        <div class="card-row"><span>معدل:</span><span style="font-weight: 700;">${sStats.hasValidData ? formatFaNum(sStats.gpa) : '-'}</span></div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    // Modal Operations (Open/Save/Delete)
-    function openSemesterModal(id = null) {
-        document.getElementById('ms-error').style.display = 'none';
-        const form = document.getElementById('form-semester');
-        form.reset();
-        if (id) {
-            const sem = state.semesters.find(s => s.id === id);
-            if (sem) {
-                document.getElementById('ms-id').value = sem.id;
-                document.getElementById('ms-name').value = sem.name;
-            }
-        } else {
-            document.getElementById('ms-id').value = '';
-        }
-        openModal('modal-semester');
-    }
-
-    function saveSemester(e) {
-        e.preventDefault();
-        const idInput = document.getElementById('ms-id').value;
-        const nameInput = document.getElementById('ms-name').value.trim();
-        if (!nameInput) return document.getElementById('ms-error').style.display = 'block';
-
-        if (idInput) {
-            const sem = state.semesters.find(s => s.id === idInput);
-            if(sem) sem.name = nameInput;
-            showToast('ویرایش شد.');
-        } else {
-            state.semesters.push({ id: generateId(), name: nameInput, courses: [] });
-            showToast('ترم اضافه شد.');
-        }
-        saveData(); renderSemestersList(); closeModal('modal-semester');
-    }
-
-    function deleteSemester(id) {
-        openConfirm('حذف ترم و تمامی دروس آن؟', () => {
-            state.semesters = state.semesters.filter(s => s.id !== id);
-            state.groups.forEach(g => g.semesterIds = g.semesterIds.filter(sid => sid !== id));
-            saveData(); renderSemestersList(); showToast('حذف شد.');
-        });
-    }
-
-    function openCourseModal(id = null) {
-        document.getElementById('mc-grade-error').style.display = 'none';
-        document.getElementById('mc-credits-error').style.display = 'none';
-        document.getElementById('form-course').reset();
-        const sem = state.semesters.find(s => s.id === currentSemesterId);
-        
-        if (id && sem) {
-            const c = sem.courses.find(x => x.id === id);
-            if (c) {
-                document.getElementById('mc-id').value = c.id;
-                document.getElementById('mc-name').value = c.name;
-                document.getElementById('mc-grade').value = c.grade !== null ? c.grade : '';
-                document.getElementById('mc-credits').value = c.credits;
-            }
-        } else {
-            document.getElementById('mc-id').value = '';
-        }
-        openModal('modal-course');
-    }
-
-    function saveCourse(e) {
-        e.preventDefault();
-        const idInput = document.getElementById('mc-id').value;
-        const nameInput = document.getElementById('mc-name').value.trim();
-        const grade = parseFaFloat(document.getElementById('mc-grade').value);
-        const credits = parseFaFloat(document.getElementById('mc-credits').value);
-        
-        let hasError = false;
-        if (grade !== null && (grade < 0 || grade > 20)) { document.getElementById('mc-grade-error').style.display = 'block'; hasError = true; }
-        if (credits === null || credits <= 0) { document.getElementById('mc-credits-error').style.display = 'block'; hasError = true; }
-        if (hasError) return;
-
-        const sem = state.semesters.find(s => s.id === currentSemesterId);
-        if (idInput) {
-            const c = sem.courses.find(x => x.id === idInput);
-            if(c) { c.name = nameInput; c.grade = grade; c.credits = credits; }
-            showToast('بروزرسانی شد.');
-        } else {
-            sem.courses.push({ id: generateId(), name: nameInput, grade, credits });
-            showToast('درس اضافه شد.');
-        }
-        saveData(); renderSemesterDetail(); closeModal('modal-course');
-    }
-
-    function deleteCourse(id) {
-        openConfirm('حذف این درس؟', () => {
-            const sem = state.semesters.find(s => s.id === currentSemesterId);
-            if (sem) { sem.courses = sem.courses.filter(c => c.id !== id); saveData(); renderSemesterDetail(); showToast('درس حذف شد.'); }
-        });
-    }
-
-    function openGroupModal(id = null) {
-        document.getElementById('mg-error').style.display = 'none';
-        document.getElementById('form-group').reset();
-        
-        const listDiv = document.getElementById('mg-semesters-list');
-        listDiv.innerHTML = state.semesters.map(s => `
-            <label class="checkbox-item"><input type="checkbox" name="group-sems" value="${s.id}"> <span>${escapeHtml(s.name)}</span></label>
-        `).join('');
-        
-        if (id) {
-            const group = state.groups.find(g => g.id === id);
-            if (group) {
-                document.getElementById('mg-id').value = group.id;
-                document.getElementById('mg-name').value = group.name;
-                document.querySelectorAll('input[name="group-sems"]').forEach(cb => {
-                    if (group.semesterIds.includes(cb.value)) cb.checked = true;
-                });
-            }
-        } else {
-            document.getElementById('mg-id').value = '';
-        }
-        openModal('modal-group');
-    }
-
-    function editCurrentGroup() { if(currentGroupId) openGroupModal(currentGroupId); }
-
-    function saveGroup(e) {
-        e.preventDefault();
-        const idInput = document.getElementById('mg-id').value;
-        const nameInput = document.getElementById('mg-name').value.trim();
-        const checked = Array.from(document.querySelectorAll('input[name="group-sems"]:checked')).map(cb => cb.value);
-        
-        if (checked.length === 0) return document.getElementById('mg-error').style.display = 'block';
-
-        if (idInput) {
-            const group = state.groups.find(g => g.id === idInput);
-            if(group) { group.name = nameInput; group.semesterIds = checked; }
-            showToast('گروه بروزرسانی شد.');
-            if (currentGroupId === idInput) renderGroupDetail();
-        } else {
-            state.groups.push({ id: generateId(), name: nameInput, semesterIds: checked });
-            showToast('گروه ایجاد شد.');
-        }
-        saveData(); renderGroupsList(); closeModal('modal-group');
-    }
-
-    function deleteGroup(id) {
-        openConfirm('حذف این معدل تجمیعی؟', () => {
-            state.groups = state.groups.filter(g => g.id !== id);
-            saveData(); renderGroupsList(); showToast('حذف شد.');
-        });
-    }
-
-    function exportData() {
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `gpa_backup_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
-
-    function handleImport(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const imported = JSON.parse(e.target.result);
-                if (imported && Array.isArray(imported.semesters)) {
-                    openConfirm('تمام داده‌های فعلی جایگزین خواهد شد، مطمئن هستید؟', () => {
-                        state = imported; saveData(); showToast('اطلاعات بازیابی شد.'); switchView('view-dashboard');
-                    });
-                }
-            } catch (err) { showToast('فایل نامعتبر است.', 'error'); }
-        };
-        reader.readAsText(file);
-        event.target.value = '';
-    }
-
-    function confirmWipeData() {
-        openConfirm('هشدار: کل اطلاعات پاک خواهند شد! مطمئن هستید؟', () => {
-            state = { semesters: [], groups: [] }; saveData(); showToast('اطلاعات پاک شد.'); switchView('view-dashboard');
-        });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        loadData(); renderDashboard();
-    });
-</script>
-</body>
-</html>
