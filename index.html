@@ -80,7 +80,7 @@
         header {
             background-color: var(--surface);
             border-radius: var(--radius);
-            padding: 15px 24px;
+            padding: 15px 20px;
             box-shadow: var(--shadow-sm);
             display: flex;
             justify-content: space-between;
@@ -88,7 +88,9 @@
             margin-bottom: 24px;
             border: 1px solid var(--border);
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 12px;
+            width: 100%;
+            overflow: hidden;
         }
 
         .logo {
@@ -105,6 +107,13 @@
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 4px;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-link {
@@ -655,9 +664,18 @@
         .logo svg { stroke-width: 2.5; width: 28px; height: 28px; }
 
         @media (max-width: 768px) {
-            .app-container { padding: 12px; }
-            header { flex-direction: column; align-items: stretch; }
-            .nav-links { justify-content: flex-start; }
+            .app-container { 
+                padding: 12px; 
+                overflow-x: hidden; 
+            }
+            header { 
+                padding: 12px 14px;
+                gap: 12px;
+            }
+            .nav-links { 
+                width: 100%;
+                justify-content: flex-start; 
+            }
             .summary-banner { flex-direction: column; text-align: center; }
             .modal { max-width: 100%; height: 100%; border-radius: 0; max-height: 100vh; }
             .modal-overlay { padding: 0; }
@@ -680,15 +698,15 @@
             <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
             معدل‌یار علوم پزشکی
         </div>
+        <button class="theme-toggle" id="btn-theme" title="تغییر تم">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
         <nav class="nav-links">
             <button class="nav-link active" data-target="view-dashboard">داشبورد</button>
             <button class="nav-link" data-target="view-semesters">ترم‌های تحصیلی</button>
             <button class="nav-link" data-target="view-groups">معدل‌های تجمیعی</button>
             <button class="nav-link" data-target="view-settings">پشتیبان‌گیری</button>
         </nav>
-        <button class="theme-toggle" id="btn-theme" title="تغییر تم">
-            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </button>
     </header>
 
     <main>
